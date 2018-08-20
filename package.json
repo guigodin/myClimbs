@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+		"start": "node server.js",
+		"heroku-postbuild": "next build"
   },
   "keywords": [],
   "author": "",
