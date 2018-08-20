@@ -2,7 +2,7 @@ const next = require("next")
 const nextAuth = require("next-auth")
 const dev = process.env.NODE_ENV !== "production"
 const nextAuthConfig = require("./next-auth.config")
-const apiRoutes = require("./server/routes/api.js")
+const apiRoutes = require("./server/routes")
 const User =  require("./server/models").User
 
 // Initialize Next.js
@@ -22,7 +22,9 @@ nextApp
 	.then(nextAuthAppOptions => {
     
 		const server = nextAuthAppOptions.expressApp
+		const express = nextAuthAppOptions.express
 		server.use("/api", apiRoutes)
+		server.use("/fonts/ionicons", express.static("./node_modules/ionicons/dist/fonts"))
 		server.get("*", (req, res) => {
 			return handle(req, res)
 		})
