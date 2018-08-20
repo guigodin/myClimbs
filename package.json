@@ -1,5 +1,8 @@
 {
   "name": "ukc_graphs",
+	"engines": {
+		    "node": "6.11.x"
+				  },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
