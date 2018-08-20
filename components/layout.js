@@ -5,7 +5,6 @@ import Link from "next/link"
 import { Container, Row, Col, Nav, NavItem, Button, Form, NavLink, Collapse,
 	Navbar, NavbarToggler, NavbarBrand, Modal, ModalHeader, ModalBody,
 	ModalFooter, ListGroup, ListGroupItem } from "reactstrap"
-import Signin from "./signin"
 import { NextAuth } from "next-auth/client"
 import Cookies from "universal-cookie"
 import Package from "../package"
@@ -55,7 +54,7 @@ export default class extends React.Component {
 				<Head>
 					<meta charSet="UTF-8" />
 					<meta name="viewport" content="width=device-width, initial-scale=1"/>
-					<title>{this.props.title || "Next.js Starter Project"}</title>
+					<title>{this.props.title || "UKC GRAPHS"}</title>
 					<style dangerouslySetInnerHTML={{__html: Styles}}/>
 					<script src="https://cdn.polyfill.io/v2/polyfill.min.js"/>
 				</Head>
@@ -68,6 +67,7 @@ export default class extends React.Component {
 					<input className="nojs-navbar-check" id="nojs-navbar-check" type="checkbox" aria-label="Menu"/>
 					<label tabIndex="1" htmlFor="nojs-navbar-check" className="nojs-navbar-label mt-2" />
 					<div className="nojs-navbar">
+						{/*
 						<Nav navbar>
 							<div tabIndex="1" className="dropdown nojs-dropdown">
 								<div className="nav-item">
@@ -77,21 +77,9 @@ export default class extends React.Component {
 									<Link prefetch href="/examples/authentication">
 										<a href="/examples/authentication" className="dropdown-item">Auth</a>
 									</Link>
-									<Link prefetch href="/examples/async">
-										<a href="/examples/async" className="dropdown-item">Async Data</a>
-									</Link>
-									<Link prefetch href="/examples/layout">
-										<a href="/examples/layout" className="dropdown-item">Layout</a>
-									</Link>
-									<Link prefetch href="/examples/routing">
-										<a href="/examples/routing" className="dropdown-item">Routing</a>
-									</Link>
-									<Link prefetch href="/examples/styling">
-										<a href="/examples/styling" className="dropdown-item">Styling</a>
-									</Link>
 								</div>
 							</div>
-						</Nav>
+						</Nav> */}
 						<UserMenu session={this.props.session} toggleModal={this.toggleModal} signinBtn={this.props.signinBtn}/>
 					</div>
 				</Navbar>
@@ -110,7 +98,6 @@ export default class extends React.Component {
 						<span className="ml-2">&copy; {new Date().getYear() + 1900}.</span>
 					</p>
 				</Container>
-				<SigninModal modal={this.state.modal} toggleModal={this.toggleModal} session={this.props.session} providers={this.state.providers}/>
 			</React.Fragment>
 		)
 	}
@@ -199,11 +186,6 @@ export class UserMenu extends React.Component {
 							</span>
 						</div>
 						<div className="dropdown-menu">
-							<Link prefetch href="/account">
-								<a href="/account" className="dropdown-item"><span className="icon ion-md-person mr-1"></span> Your Account</a>
-							</Link>
-							<AdminMenuItem {...this.props}/>
-							<div className="dropdown-divider d-none d-md-block"/>
 							<div className="dropdown-item p-0">
 								<Form id="signout" method="post" action="/auth/signout" onSubmit={this.handleSignoutSubmit}>
 									<input name="_csrf" type="hidden" value={this.props.session.csrfToken}/>
@@ -232,36 +214,5 @@ export class UserMenu extends React.Component {
 				</Nav>
 			)
 		}
-	}
-}
-
-export class AdminMenuItem extends React.Component {
-	render() {
-		if (this.props.session.user && this.props.session.user.admin === true) {
-			return (
-				<React.Fragment>
-					<Link prefetch href="/admin">
-						<a href="/admin" className="dropdown-item"><span className="icon ion-md-settings mr-1"></span> Admin</a>
-					</Link>
-				</React.Fragment>
-			)
-		} else {
-			return(<div/>)
-		}
-	}
-}
-
-export class SigninModal extends React.Component {
-	render() {
-		if (this.props.providers === null) return null
-    
-		return (
-			<Modal isOpen={this.props.modal} toggle={this.props.toggleModal} style={{maxWidth: 700}}>
-				<ModalHeader>Sign up / Sign in</ModalHeader>
-				<ModalBody style={{padding: "1em 2em"}}>
-					<Signin session={this.props.session} providers={this.props.providers}/>
-				</ModalBody>
-			</Modal>
-		)
 	}
 }

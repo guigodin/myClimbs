@@ -8,12 +8,13 @@
  * 
  * We use 'isomorphic-fetch' as it runs both server and client side.
  */
-import fetch from 'isomorphic-fetch'
+import fetch from "isomorphic-fetch"
+
 
 export default class {
-  static async getData() {
-    const res = await fetch('//jsonplaceholder.typicode.com/posts')
-    const data = await res.json()
-    return data
-  }
+	static async getData() {
+		const res = await fetch("//jsonplaceholder.typicode.com/posts")
+		const data = await res.json()
+		return data
+	}
 }

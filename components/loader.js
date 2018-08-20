@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react"
+
 
 export default class extends React.Component {
-  render() {
-    if (this.props.fullscreen) {
-      return (
-        <React.Fragment>
-          <style jsx global>{`
+	render() {
+		if (this.props.fullscreen) {
+			return (
+				<React.Fragment>
+					<style jsx global>{`
             .circle-loader {
               position: absolute;
               top: 50%;
@@ -43,17 +44,17 @@ export default class extends React.Component {
               100% {transform: rotate(360deg); }
             }
           `}</style>
-          <span className="circle-loader">
-            <svg className="circle" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="15"/>
-            </svg>
-          </span>
-        </React.Fragment>
-      )
-    } else {
-      return (
-        <React.Fragment>
-          <style jsx global>{`
+					<span className="circle-loader">
+						<svg className="circle" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="30" cy="30" r="15"/>
+						</svg>
+					</span>
+				</React.Fragment>
+			)
+		} else {
+			return (
+				<React.Fragment>
+					<style jsx global>{`
             .circle-loader {
               display: block;
               text-center;
@@ -89,13 +90,13 @@ export default class extends React.Component {
               100% {transform: rotate(360deg); }
             }
           `}</style>
-          <span className="circle-loader">
-            <svg className="circle" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="30" cy="30" r="15"/>
-            </svg>
-          </span>
-        </React.Fragment>
-      )
-    }
-  }
+					<span className="circle-loader">
+						<svg className="circle" width="60" height="60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="30" cy="30" r="15"/>
+						</svg>
+					</span>
+				</React.Fragment>
+			)
+		}
+	}
 }

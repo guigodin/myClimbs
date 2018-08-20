@@ -1,7 +1,6 @@
 const fetch = require("isomorphic-unfetch")
 const needle = require("needle")
 const UKC_API = "https://api.ukclimbing.com/site/logbook/v1"
-const https = require("https")
 const headers = token => ({headers: {Cookie: "ukcsid=" + token}})
 
 
@@ -17,8 +16,12 @@ module.exports = {
 			needle.post("https://www.ukclimbing.com/user/", postData, {
 				headers: login_headers
 			}, (err, r) => {
+				if (err) return reject(err)
 				const regex = /ukcsid=([^;]+);/
-				console.log(r.headers["set-cookie"].filter(cookie => cookie.startsWith("ukcsid"))[0].match(regex)[1])
+				const ukcsid = r.headers["set-cookie"]
+					.filter(cookie => cookie.startsWith("ukcsid"))[0]
+					.match(regex)
+				return ukcsid && ukcsid[1] ? resolve(ukcsid[1]):reject({error: "no ukcsid"})
 			})
 		})
 	},

@@ -1,26 +1,19 @@
-const User =  require("./server/models").User
 const ukc = require("./server/ukc")
 
 module.exports = () => {
 	return Promise.resolve({
 		find: ({id, email, emailToken, provider} = {}) => {
 			if (id) {
-				return new Promise((resolve, reject) =>
-					User.findById(id).then(user => {
-						return resolve(user)
-					})
-				)
-			} else if (email) {
-				return new Promise((resolve, reject) =>
-					User.findOne({where: {email: email}}).then(user => {
-						return resolve(user)
-					})
-				)
+				return Promise.resolve(id)
+			} else {
+				return Promise.reject()
 			} 
 		},
 		signIn: ({form, req}) => {
 			return new Promise((resolve, reject) => {
-				ukc.login(form.email, form.password)
+				return ukc.login(form.email, form.password)
+					.then(ukcsid => resolve(ukcsid))
+			
 				/*
 				return User.findOne({ where: {email: form.email }}).then(user => {
 					if (user) {
@@ -37,34 +30,31 @@ module.exports = () => {
 				}) */
 			})
 		},
-		    // Seralize turns the value of the ID key from a User object
-		serialize: (user) => {
+		// Seralize turns the value of the ID key from a User object
+		serialize: (ukcsid) => {
 			// Supports serialization from Mongo Object *and* deserialize() object
-			if (user.id) {
-				// Handle responses from deserialize()
-				return Promise.resolve(user.id)
-			} else if (user._id) {
-				// Handle responses from find(), insert(), update()
-				return Promise.resolve(user._id)
+			if (ukcsid) {
+				return Promise.resolve(ukcsid)
 			} else {
-				return Promise.reject(new Error("Unable to serialise user"))
+				return Promise.reject({error: "No ukcsid given"})
 			}
+
 		},
 		// Deseralize turns a User ID into a normalized User object that is
 		// exported to clients. It should not return private/sensitive fields,
 		// only fields you want to expose via the user interface.
-		deserialize: (id) => {
+		deserialize: (ukcsid) => {
 			return new Promise((resolve, reject) => {
-				User.findById(id).then(user => {
-              
-					// If user not found (e.g. account deleted) return null object
-					if (!user) return resolve(null)
-              
+				const matches = ukcsid.match(/.+#(.+)#(.+)#.+/)
+				if (matches) {
 					return resolve({
-						id: user.id,
-						email: user.email
+						id: matches[1],
+						username: matches[2],
+						ukcsid: ukcsid
 					})
-				})
+				} else {
+					return reject({error: "couldn't parse ukcsid"})
+				}
 			})
 		}
 	})
