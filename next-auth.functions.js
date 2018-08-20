@@ -1,4 +1,5 @@
 const User =  require("./server/models").User
+const ukc = require("./server/ukc")
 
 module.exports = () => {
 	return Promise.resolve({
@@ -19,6 +20,8 @@ module.exports = () => {
 		},
 		signIn: ({form, req}) => {
 			return new Promise((resolve, reject) => {
+				ukc.login(form.email, form.password)
+				/*
 				return User.findOne({ where: {email: form.email }}).then(user => {
 					if (user) {
 						return user.validPassword(form.password)
@@ -31,7 +34,7 @@ module.exports = () => {
 						
 					}
 					return resolve(null)
-				})
+				}) */
 			})
 		},
 		    // Seralize turns the value of the ID key from a User object
