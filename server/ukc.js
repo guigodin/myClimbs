@@ -22,7 +22,7 @@ module.exports = {
 				const cookies = r.headers["set-cookie"]?r.headers["set-cookie"]:[]
 				const ukcsidCookie = cookies.filter(cookie => cookie.startsWith("ukcsid"))
 				const match = ukcsidCookie[0]? ukcsidCookie[0].match(regex):null
-				return match && match[1] ? resolve(match[1]):reject({error: "no ukcsid"})
+				return match && match[1] ? resolve(match[1]):null
 			})
 		})
 	},
