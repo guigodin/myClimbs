@@ -17,7 +17,7 @@ nextApp
 		return nextAuthConfig()
 	})
 	.then(nextAuthOptions => {
-	  return nextAuth(nextApp, nextAuthOptions)  
+		return nextAuth(nextApp, nextAuthOptions)  
 	})
 	.then(nextAuthAppOptions => {
     
