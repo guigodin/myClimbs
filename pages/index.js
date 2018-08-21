@@ -9,7 +9,6 @@ import { NextAuth } from "next-auth/client"
 import Page from "../components/page"
 import Layout from "../components/layout"
 import {Bar} from "react-chartjs-2"
-import SignIn from "../components/signin"
 
 export default class extends Page {
 
