@@ -20,9 +20,8 @@ module.exports = {
 				const regex = /ukcsid=([^;]+);/
 
 				const cookies = r.headers["set-cookie"]?r.headers["set-cookie"]:[]
-				const match = cookies
-					.filter(cookie => cookie.startsWith("ukcsid"))[0]
-					.match(regex)
+				const ukcsidCookie = cookies.filter(cookie => startsWith("ukcsid"))
+				const match = ukcsidCookie[0]? ukcsidCookie[0].match(regex):null
 				return match && match[1] ? resolve(match[1]):reject({error: "no ukcsid"})
 			})
 		})
