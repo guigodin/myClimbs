@@ -12,7 +12,10 @@ module.exports = () => {
 		signIn: ({form, req}) => {
 			return new Promise((resolve, reject) => {
 				return ukc.login(form.email, form.password)
-					.then(ukcsid => resolve(ukcsid))
+					.then(ukcsid => {
+						console.log(ukcsid)
+						return resolve(ukcsid)
+					})
 					.catch(err => console.log(err))
 			
 				/*

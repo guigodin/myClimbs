@@ -25,6 +25,9 @@ nextApp
 		const express = nextAuthAppOptions.express
 		server.use("/api", apiRoutes)
 		server.use("/fonts/ionicons", express.static("./node_modules/ionicons/dist/fonts"))
+		server.get("/year/:year?", (req, res) => {
+			return nextApp.render(req, res, "/", req.params)
+		})
 		server.get("*", (req, res) => {
 			return handle(req, res)
 		})

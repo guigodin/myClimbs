@@ -12,6 +12,18 @@ import Styles from "../css/index.scss"
 
 export default class extends React.Component {
 
+	static async getInitialProps({req}) {
+		return {
+			years: []
+		}
+	}
+
+	async componentDidUpdate(prevProps, prevState, snapshot) {
+		if (prevProps.years != this.props.years) {
+		  this.render()
+		}
+	}
+
 	static propTypes() {
 		return {
 			session: React.PropTypes.object.isRequired,
@@ -19,7 +31,8 @@ export default class extends React.Component {
 			children: React.PropTypes.object.isRequired,
 			fluid: React.PropTypes.boolean,
 			navmenu: React.PropTypes.boolean,
-			signinBtn: React.PropTypes.boolean
+			signinBtn: React.PropTypes.boolean,
+			years: React.PropTypes.array.isRequired
 		}
 	}
   
@@ -67,19 +80,26 @@ export default class extends React.Component {
 					<input className="nojs-navbar-check" id="nojs-navbar-check" type="checkbox" aria-label="Menu"/>
 					<label tabIndex="1" htmlFor="nojs-navbar-check" className="nojs-navbar-label mt-2" />
 					<div className="nojs-navbar">
-						{/*
 						<Nav navbar>
 							<div tabIndex="1" className="dropdown nojs-dropdown">
 								<div className="nav-item">
-									<span className="dropdown-toggle nav-link">Examples</span>
+									<span className="dropdown-toggle nav-link">Year</span>
 								</div>
 								<div className="dropdown-menu">
-									<Link prefetch href="/examples/authentication">
-										<a href="/examples/authentication" className="dropdown-item">Auth</a>
+									<Link prefetch href="/">
+										<a href="/" className="dropdown-item">Overall</a>
 									</Link>
+									{ this.props.years.map(year => {
+										<Link prefetch href={ "/year/?year="+ year } as={ "/year/" + year }>
+											<a className="dropdown-item">{ year }</a>
+										</Link>
+									})
+
+									}
+
 								</div>
 							</div>
-						</Nav> */}
+						</Nav>
 						<UserMenu session={this.props.session} toggleModal={this.toggleModal} signinBtn={this.props.signinBtn}/>
 					</div>
 				</Navbar>

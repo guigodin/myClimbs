@@ -7,10 +7,17 @@ export default class extends React.Component {
 	static async getInitialProps({req}) {
 		return {
 			session: await NextAuth.init({req}),// Add this.props.session to all pages
-			lang: "en"// Add a lang property for accessibility
+			lang: "en",// Add a lang property for accessibility
+			years: []
 		}
 	}
   
+	constructor(props) {
+		super(props)
+		this.state = {
+			years: []
+		}
+	}
 	adminAcccessOnly() {
 		return (
 			<Layout {...this.props} navmenu={false}>

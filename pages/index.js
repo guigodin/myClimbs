@@ -13,8 +13,7 @@ import {Bar} from "react-chartjs-2"
 export default class extends Page {
 
 	async getGraphData(discipline) {
-		console.log(this.state)
-		const fetchAggr = fetch("/api/ukc/aggr/"+discipline)
+		const fetchAggr = fetch("/api/ukc/aggr/"+discipline+( this.props.year ? "/"+this.props.year:""))
 		const aggrRes = await fetchAggr
 		const aggr = await aggrRes.json()
 		const sortedGrades = Object.keys(aggr.grade).sort((a, b) => {
@@ -61,17 +60,16 @@ export default class extends Page {
 		const detailsRes = await fetchDetails
 		const details = await detailsRes.json()
      
-		return {
+		this.setState({
+			years: logbook.logbook
+				.map(entry => entry.textAscentDate.substring(0,4))
+				.reduce((acc, year) => acc.includes(year) ? acc : acc.concat(year), []),
 			grades: grades,
 			styles: styles.styles,
 			logbook: logbook.logbook,
 			routes: details.routes,
-			crags: details.crags,
-		}
-	}
-
-	async componentDidMount() {
-		this.setState(await this.fetchData())
+			crags: details.crags
+		})
 		this.setState({
 			graphData: {
 				top: await this.getGraphData("top"),
@@ -81,6 +79,17 @@ export default class extends Page {
 				dws: await this.getGraphData("dws")
 			}
 		})
+
+	}
+  
+	async componentDidMount() {
+		this.fetchData()
+	}
+
+	async componentDidUpdate(prevProps, prevState, snapshot) {
+		if (prevProps.year != this.props.year) {
+			this.fetchData()
+		}
 	}
 	constructor(props) {
 		super(props)
@@ -122,6 +131,8 @@ export default class extends Page {
 	}
 	static async getInitialProps({req, res, query}) {
 		let props = await super.getInitialProps({req})
+		props.year = query.year
+		console.log(props)
 		const cookies = new Cookies((req && req.headers.cookie) ? req.headers.cookie : null)
 		cookies.set("redirect_url", "/", { path: "/" })
 		if (!props.session.user) {
@@ -137,20 +148,23 @@ export default class extends Page {
 	}
 
 	render() {
+		console.log("render called")
 		if (this.props.session.user) {
 			return (
 				<Layout navmenu={ false } {...this.props}>
-					<h1>Better UKC Graphs</h1>
+					<h1>Better UKC Graphs - { this.props.year ? this.props.year:"Overall" }</h1>
 					<Bar data={ this.state.graphData.tradLead } options={ this.state.barOptions }></Bar>
 					<Bar data={ this.state.graphData.tradSecond } options={ this.state.barOptions }></Bar>
 					<Bar data={ this.state.graphData.top } options={ this.state.barOptions }></Bar>
 					<Bar data={ this.state.graphData.boulder } options={ this.state.barOptions }></Bar>
 					<Bar data={ this.state.graphData.dws } options={ this.state.barOptions }></Bar>
+
+					<p>{ this.state.years }</p>
 				</Layout>
 			)
 		} else {
 			return (
-				<Layout {...this.props} navmenu={false} signinBtn={false}>
+				<Layout {...this.props} navmenu={false} signinBtn={false} years={this.state.years}>
 					<p>
 						<Link href="/auth/credentials"><a>login</a></Link>
 					</p>

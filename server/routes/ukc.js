@@ -13,6 +13,19 @@ router.get("/logbook/:id?", (req, res) => {
 	}
 })
 
+router.get("/years/:id?", (req, res) => {
+	if (req.user) {
+		const id = req.params.id ? req.params.id:req.user.id
+
+		ukc.logbook(id, req.user.ukcsid).then(data => {
+			data.map(entry => entry.textAscentDate.substring(0,4))
+				.reduce((acc, year) => acc.includes(year) ? acc : acc.concat(year), [])
+		})
+	}  else {
+
+		return res.status(403).json({error: "Must be signed in"})
+	}
+})
 router.get("/details/:id?", (req, res) => {
 	if (req.user) {
 		const id = req.params.id ? req.params.id:req.user.id
@@ -42,7 +55,7 @@ router.get("/grades", (req, res) => {
 	}).catch(err => res.status(500).json(err))
 })
 
-router.get("/aggr/:discipline", async (req, res) => {
+router.get("/aggr/:discipline/:year?", async (req, res) => {
 	if (req.user) {
 		const id = req.params.id ? req.params.id:req.user.id
 		const grades = await ukc.grades().catch(err => {
@@ -55,6 +68,7 @@ router.get("/aggr/:discipline", async (req, res) => {
 			throw err
 		})
 		const options = {
+			year: req.params.year ? req.params.year:/.*/,
 			getGrade: (route) => {
 				if (route.gradeType === 4) {
 					const discipline = route.grade.startsWith("V") ? 9:10
@@ -99,7 +113,8 @@ router.get("/aggr/:discipline", async (req, res) => {
 				details.routes[entry.ukcID].gradeType
 					.toString().match(options.discipline) &&
 				entry.style > options.down && 
-				entry.style < options.up
+				entry.style < options.up &&
+				entry.textAscentDate.match(options.year)
 			)
 		}).reduce(
 			(aggr, entry) => {
