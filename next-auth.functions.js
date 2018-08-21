@@ -13,6 +13,7 @@ module.exports = () => {
 			return new Promise((resolve, reject) => {
 				return ukc.login(form.email, form.password)
 					.then(ukcsid => resolve(ukcsid))
+					.catch(err => console.log(err))
 			
 				/*
 				return User.findOne({ where: {email: form.email }}).then(user => {
