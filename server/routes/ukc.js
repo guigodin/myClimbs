@@ -45,42 +45,50 @@ router.get("/grades", (req, res) => {
 router.get("/aggr/:discipline", async (req, res) => {
 	if (req.user) {
 		const id = req.params.id ? req.params.id:req.user.id
-		const details = await ukc.details(id, req.user.ukcsid)
-		const logbook = await ukc.logbook(id, req.user.ukcsid)
-		const options = {}
+		const grades = await ukc.grades().catch(err => {
+			throw err
+		})
+		const details = await ukc.details(id, req.user.ukcsid).catch(err => {
+			throw err
+		})
+		const logbook = await ukc.logbook(id, req.user.ukcsid).catch(err => {
+			throw err
+		})
+		const options = {
+			getGrade: (route) => {
+				if (route.gradeType === 4) {
+					const discipline = route.grade.startsWith("V") ? 9:10
+					const grade = Object.keys(grades[10].grades).filter(key => grades[10].grades[key].score === grades[discipline].grades[route.grade].score)[0]
+					return {discipline: 10, name: grade}
+				}
+				return {discipline: route.gradeType, name: route.grade}
+			}
+		}
 		switch(req.params.discipline) {
 		case "tradLead":
 			options.up = 30
 			options.down = 19
 			options.discipline = 2
-			options.gradeType = ((route) => 2	)
 			break
 		case "tradSecond":
 			options.up = 40
 			options.discipline = 2
 			options.down = 29
-			options.gradeType = (route) => 2
 			break
 		case "top":
 			options.up = 50
-			options.discipline = 2
+			options.discipline = /.*/
 			options.down = 39
-			options.gradeType = (route) => 2
 			break
 		case "boulder":
 			options.up = 60
 			options.down = 49
 			options.discipline = /.*/
-			options.gradeType = (route) => route.grade.startsWith("V") ? 9:10
 			break
 		case "dws":
 			options.up = 80
 			options.down = 69
 			options.discipline = /.*/
-			options.gradeType = (route) => {
-				if (route.gradeType === 4) return route.grade.startsWith("V") ? 9:10
-				return route.gradeType
-			}
 			break
 		default:
 			return res.status(404).json({error: "no such aggregation"})
@@ -98,26 +106,26 @@ router.get("/aggr/:discipline", async (req, res) => {
 				aggr.total += 1
 				const style = entry.style - (entry.style % 10)
 				const route = details.routes[entry.ukcID]
-				const discipline = options.gradeType(route)
-				if (!aggr.grade[route.grade]) {
-					aggr.grade[route.grade] = {
+				const grade = options.getGrade(route)
+				if (!aggr.grade[grade.name]) {
+					aggr.grade[grade.name] = {
 						total: 0,
 						style: {},
-						discipline: discipline
+						discipline: grade.discipline
 					}
 				}
-				if (!aggr.grade[route.grade].style[style]) {
-					aggr.grade[route.grade].style[style] = {
+				if (!aggr.grade[grade.name].style[style]) {
+					aggr.grade[grade.name].style[style] = {
 						total: 0,
 						substyle: {}
 					}
 				}
-				if (!aggr.grade[route.grade].style[style].substyle[entry.style]) {
-					aggr.grade[route.grade].style[style].substyle[entry.style] = 0
+				if (!aggr.grade[grade.name].style[style].substyle[entry.style]) {
+					aggr.grade[grade.name].style[style].substyle[entry.style] = 0
 				}
-				aggr.grade[route.grade].total += 1
-				aggr.grade[route.grade].style[style].total += 1
-				aggr.grade[route.grade].style[style].substyle[entry.style] += 1
+				aggr.grade[grade.name].total += 1
+				aggr.grade[grade.name].style[style].total += 1
+				aggr.grade[grade.name].style[style].substyle[entry.style] += 1
 				if (!aggr.style[style]) {
 					aggr.style[style] = {
 						total: 0,
@@ -125,17 +133,17 @@ router.get("/aggr/:discipline", async (req, res) => {
 						grade: {}
 					}
 				}
-				if (!aggr.style[style].grade[route.grade]) {
-					aggr.style[style].grade[route.grade] = {
+				if (!aggr.style[style].grade[grade.name]) {
+					aggr.style[style].grade[grade.name] = {
 						total: 0,
-						discipline: discipline
+						discipline: grade.discipline
 					}
 				}
 				if (!aggr.style[style].substyle[entry.style]) {
 					aggr.style[style].substyle[entry.style] = 0
 				}
 				aggr.style[style].total += 1
-				aggr.style[style].grade[route.grade].total += 1
+				aggr.style[style].grade[grade.name].total += 1
 				aggr.style[style].substyle[entry.style] += 1
 
 				if (!aggr.substyle[entry.style]) {
@@ -144,14 +152,14 @@ router.get("/aggr/:discipline", async (req, res) => {
 						grade: {}
 					}
 				}
-				if (!aggr.substyle[entry.style].grade[route.grade]) {
-					aggr.substyle[entry.style].grade[route.grade] = {
+				if (!aggr.substyle[entry.style].grade[grade.name]) {
+					aggr.substyle[entry.style].grade[grade.name] = {
 						total: 0,
-						discipline: discipline
+						discipline: grade.discipline
 					}
 				}
 				aggr.substyle[entry.style].total += 1
-				aggr.substyle[entry.style].grade[route.grade].total += 1
+				aggr.substyle[entry.style].grade[grade.name].total += 1
 				return (aggr)
 			},
 			{total: 0, grade: {}, style:{}, substyle: {}}
