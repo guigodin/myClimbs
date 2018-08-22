@@ -41,7 +41,7 @@ export default class extends React.Component {
 			})
 			console.log("bou")
 		}
-	}
+	} 
 	async toggleModal(e) {
 		if (e) e.preventDefault()
 
@@ -84,7 +84,7 @@ export default class extends React.Component {
 								</div>
 								<div className="dropdown-menu">
 									<Link prefetch href="/">
-										<a href="/" className="dropdown-item">Overall</a>
+										<a className="dropdown-item">Overall</a>
 									</Link>
 									{ this.state.years.map(year => (
 										<Link prefetch href={ "/year/?year="+ year } as={ "/year/" + year }>
