@@ -77,7 +77,6 @@ export default class extends Page {
 					<StackChart {...this.state} {...this.props} discipline="top"></StackChart>
 					<StackChart {...this.state} {...this.props} discipline="boulder"></StackChart>
 					<StackChart {...this.state} {...this.props} discipline="dws"></StackChart>
-					<p>{ this.state.years }</p>
 				</Layout>
 			)
 		} else {
