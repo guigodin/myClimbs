@@ -8,15 +8,11 @@ export default class extends React.Component {
 		return {
 			session: await NextAuth.init({req}),// Add this.props.session to all pages
 			lang: "en",// Add a lang property for accessibility
-			years: []
 		}
 	}
   
 	constructor(props) {
 		super(props)
-		this.state = {
-			years: []
-		}
 	}
 	adminAcccessOnly() {
 		return (

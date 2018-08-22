@@ -12,18 +12,6 @@ import Styles from "../css/index.scss"
 
 export default class extends React.Component {
 
-	static async getInitialProps({req}) {
-		return {
-			years: []
-		}
-	}
-
-	async componentDidUpdate(prevProps, prevState, snapshot) {
-		if (prevProps.years != this.props.years) {
-		  this.render()
-		}
-	}
-
 	static propTypes() {
 		return {
 			session: React.PropTypes.object.isRequired,
@@ -32,7 +20,6 @@ export default class extends React.Component {
 			fluid: React.PropTypes.boolean,
 			navmenu: React.PropTypes.boolean,
 			signinBtn: React.PropTypes.boolean,
-			years: React.PropTypes.array.isRequired
 		}
 	}
   
@@ -45,7 +32,14 @@ export default class extends React.Component {
 		}
 		this.toggleModal = this.toggleModal.bind(this)
 	}
-  
+
+	async componentDidUpdate(prevProps) {
+		if (this.props.years != prevProps.years) {
+			this.setState({
+				years: this.props.years
+			})
+		}
+	}
 	async toggleModal(e) {
 		if (e) e.preventDefault()
 
@@ -89,11 +83,12 @@ export default class extends React.Component {
 									<Link prefetch href="/">
 										<a href="/" className="dropdown-item">Overall</a>
 									</Link>
-									{ this.props.years.map(year => {
+									{ (Array.isArray(this.state.years) ? this.state.years:[]).map(year => {
 										<Link prefetch href={ "/year/?year="+ year } as={ "/year/" + year }>
 											<a className="dropdown-item">{ year }</a>
 										</Link>
 									})
+
 
 									}
 

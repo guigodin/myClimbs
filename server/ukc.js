@@ -32,7 +32,7 @@ module.exports = {
 				.then(r => {
 					if (r.ok) {
 						r.json().then(data => {
-							return resolve(data)
+							return resolve(data.logbook)
 						})
 					} else {
 						r.text().then(data => {
@@ -99,7 +99,7 @@ module.exports = {
 				.then(r => {
 					if (r.ok) {
 						r.json().then(data => {
-							return resolve(data)
+							return resolve(data.styles)
 						})
 					} else {
 						r.text().then(data => {

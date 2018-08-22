@@ -107,7 +107,7 @@ router.get("/aggr/:discipline/:year?", async (req, res) => {
 		default:
 			return res.status(404).json({error: "no such aggregation"})
 		}
-		const trad_aggr = logbook.logbook.filter(entry => {
+		const trad_aggr = logbook.filter(entry => {
 			return (
 				entry.trash == 0 && 
 				details.routes[entry.ukcID].gradeType

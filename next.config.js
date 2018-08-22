@@ -1,3 +1,6 @@
+const webpack = require("webpack")
+require("dotenv").config()
+
 module.exports = {
 	webpack: (config, { dev }) => {
 		config.module.rules.push(
@@ -17,6 +20,11 @@ module.exports = {
 				loader: "babel-loader!raw-loader!sass-loader"
 			}
 		)
+		config.plugins.concat([
+			new webpack.DefinePlugin({
+				"process.env.API_URL": JSON.stringify(process.env.API_URL)
+			})
+		])
 		return config
 	}
 }
