@@ -28,7 +28,8 @@ export default class extends React.Component {
 		this.state = {
 			navOpen: false,
 			modal: false,
-			providers: null
+			providers: null,
+			years: []
 		}
 		this.toggleModal = this.toggleModal.bind(this)
 	}
@@ -38,6 +39,7 @@ export default class extends React.Component {
 			this.setState({
 				years: this.props.years
 			})
+			console.log("bou")
 		}
 	}
 	async toggleModal(e) {
@@ -56,6 +58,7 @@ export default class extends React.Component {
 	}
   
 	render() {
+		console.log(this.state.years)
 		return (
 			<React.Fragment>
 				<Head>
@@ -83,14 +86,11 @@ export default class extends React.Component {
 									<Link prefetch href="/">
 										<a href="/" className="dropdown-item">Overall</a>
 									</Link>
-									{ (Array.isArray(this.state.years) ? this.state.years:[]).map(year => {
+									{ this.state.years.map(year => (
 										<Link prefetch href={ "/year/?year="+ year } as={ "/year/" + year }>
 											<a className="dropdown-item">{ year }</a>
 										</Link>
-									})
-
-
-									}
+									))}
 
 								</div>
 							</div>
